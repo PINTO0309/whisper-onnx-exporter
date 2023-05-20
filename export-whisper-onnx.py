@@ -61,15 +61,16 @@ torch.onnx.export(
 	output_names=["output"],
 	opset_version=OPSET,
 )
-model_onnx2 = onnx.load(ENCODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, ENCODER_FILE)
-model_onnx2 = onnx.load(ENCODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, ENCODER_FILE)
-model_onnx2 = onnx.load(ENCODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, ENCODER_FILE)
+if modelName not in ["large", "large-v1", "large-v2"]:
+	model_onnx2 = onnx.load(ENCODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, ENCODER_FILE)
+	model_onnx2 = onnx.load(ENCODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, ENCODER_FILE)
+	model_onnx2 = onnx.load(ENCODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, ENCODER_FILE)
 
 
 ######### Decoder
@@ -94,12 +95,13 @@ torch.onnx.export(
 	},
 	opset_version=OPSET,
 )
-model_onnx2 = onnx.load(DECODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, DECODER_FILE)
-model_onnx2 = onnx.load(DECODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, DECODER_FILE)
-model_onnx2 = onnx.load(DECODER_FILE)
-model_simp, check = simplify(model_onnx2)
-onnx.save(model_simp, DECODER_FILE)
+if modelName not in ["large", "large-v1", "large-v2"]:
+	model_onnx2 = onnx.load(DECODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, DECODER_FILE)
+	model_onnx2 = onnx.load(DECODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, DECODER_FILE)
+	model_onnx2 = onnx.load(DECODER_FILE)
+	model_simp, check = simplify(model_onnx2)
+	onnx.save(model_simp, DECODER_FILE)
