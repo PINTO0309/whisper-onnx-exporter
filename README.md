@@ -35,8 +35,6 @@ curl -o pytorch-models/large-v2.pt "https://openaipublic.azureedge.net/main/whis
 curl -o pytorch-models/large.pt "https://openaipublic.azureedge.net/main/whisper/models/81f7c96c852ee8fc832187b0132e569d6c3065a3252ed18e56effd0b6a73e524/large-v2.pt"
 ```
 
-To get the models you can use the official Whisper CLI, which would auto-download a model as needed. On Windows, the downloaded models should be stored at `%userprofile%\.cache\whisper`.
-
 Run:
 ```
 python export-whisper-onnx.py [whisper-model-name]
