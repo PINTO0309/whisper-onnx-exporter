@@ -19,6 +19,7 @@ You can download pre-exported models for all sizes, except `large`, `large-v1` a
 Ensure you have PyTorch installed.
 
 Copy the official Whisper model files (`.pt`) to the `pytorch-models` subdirectory.
+https://github.com/openai/whisper/blob/248b6cb124225dd263bb9bd32d060b6517e067f8/whisper/__init__.py#L17-L29
 
 To get the models you can use the official Whisper CLI, which would auto-download a model as needed. On Windows, the downloaded models should be stored at `%userprofile%\.cache\whisper`.
 
