@@ -73,11 +73,11 @@ class MultiHeadAttention(nn.Module):
 
 		k = self.key(x if xa is None else xa)
 		v = self.value(x if xa is None else xa)
-		
+
 		if kv_cache is not None and k.shape[1] <= self.n_ctx:
 			layer_count = kv_cache.shape[0] // 2
 			key_id = self.layer_id - layer_count
-			
+
 			value_id = key_id + 1
 			size = k.shape[1]
 			kv_cache[key_id, :, -size:, :] = k
@@ -86,7 +86,7 @@ class MultiHeadAttention(nn.Module):
 			v = kv_cache[value_id]
 
 		wv, qk = self.qkv_attention(q, k, v, mask)
-		
+
 		return self.out(wv), qk
 
 	def qkv_attention(self, q: Tensor, k: Tensor, v: Tensor, mask: Optional[Tensor] = None):
@@ -127,16 +127,16 @@ class ResidualAttentionBlock(nn.Module):
 	):
 		attentionWeights, attentionQK = self.attn(self.attn_ln(x), mask=mask, kv_cache=kv_cache)
 		x = x + attentionWeights
-		
+
 		if self.cross_attn:
 			crossAttentionWeights, crossAttentionQK = self.cross_attn(self.cross_attn_ln(x), xa, kv_cache=kv_cache)
 			x = x + crossAttentionWeights
 		else:
 			crossAttentionWeights = None
 			crossAttentionQK = None
-		
+
 		x = x + self.mlp(self.mlp_ln(x))
-		
+
 		return x, crossAttentionQK
 
 
@@ -166,16 +166,16 @@ class AudioEncoder(nn.Module):
 			x, _, = block(x)
 
 		x = self.ln_post(x)
-		
+
 		return x
 
 
 class TextDecoder(nn.Module):
 	def __init__(self, n_vocab: int, n_ctx: int, n_state: int, n_head: int, n_layer: int):
 		super().__init__()
-		
+
 		self.n_head = n_head
-		
+
 		self.token_embedding = nn.Embedding(n_vocab, n_state)
 		self.positional_embedding = nn.Parameter(torch.empty(n_ctx, n_state))
 
@@ -192,18 +192,18 @@ class TextDecoder(nn.Module):
 		xa : torch.Tensor, shape = (batch_size, n_mels, n_audio_ctx)
 			the encoded audio features to be attended on
 		"""
-	
+
 		# minus one because we pre allocate kv_cache
 		x = self.token_embedding(x) + self.positional_embedding[offset:offset + x.shape[-1]]
 		x = x.to(xa.dtype)
-		
+
 		crossAttentionQKs = torch.zeros((len(self.blocks), x.shape[0], self.n_head, x.shape[1], xa.shape[1]))
-		
+
 		for blockIndex in range(len(self.blocks)):
 			block = self.blocks[blockIndex]
 			x, crossAttentionQK = block(x, xa, mask=self.mask, kv_cache=kv_cache)
 			#x, crossAttentionQK = block(x, xa, mask=self.mask, kv_cache=None)
-			
+
 			crossAttentionQKs[blockIndex] = crossAttentionQK
 
 		x = self.ln(x)
@@ -266,5 +266,5 @@ class Whisper(nn.Module):
 			size = [64, n_group, length, 1280]
 		else:
 			raise ValueError(f"Unsupported model type: {self.type}")
-			
+
 		return np.zeros(size, dtype=np.float32)
