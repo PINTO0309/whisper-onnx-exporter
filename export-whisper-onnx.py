@@ -49,7 +49,7 @@ encodedFeatures = whisper.encoder(audioEncoderRandomInputs)
 outputDir = f"onnx-models"
 os.makedirs(outputDir, exist_ok=True)
 
-OPSET = 17
+OPSET = 11
 
 ######### Encoder
 ENCODER_FILE = f"{outputDir}/{modelName}_encoder_{OPSET}.onnx"
