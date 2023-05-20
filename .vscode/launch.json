@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 現在のファイル",
+            "name": "export-tiny",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -10,6 +10,116 @@
             "justMyCode": true,
             "args": [
                 "tiny"
+            ]
+        },
+        {
+            "name": "export-tiny.en",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "tiny.en"
+            ]
+        },
+        {
+            "name": "export-base",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "base"
+            ]
+        },
+        {
+            "name": "export-base.en",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "base.en"
+            ]
+        },
+        {
+            "name": "export-small",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "small"
+            ]
+        },
+        {
+            "name": "export-small.en",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "small.en"
+            ]
+        },
+        {
+            "name": "export-medium",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "medium"
+            ]
+        },
+        {
+            "name": "export-medium.en",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "medium.en"
+            ]
+        },
+        {
+            "name": "export-large",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "large"
+            ]
+        },
+        {
+            "name": "export-large-v1",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "large-v1"
+            ]
+        },
+        {
+            "name": "export-large-v2",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "large-v2"
             ]
         }
     ]
