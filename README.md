@@ -57,6 +57,9 @@ https://github.com/quanvuhust/Export-ONNX-float-16
 
 https://zenn.dev/pinto0309/scraps/dc3e7b8ec32492
 
+## Converted Models
+https://github.com/PINTO0309/PINTO_model_zoo/tree/main/381_Whisper
+
 ## License
 
 MIT

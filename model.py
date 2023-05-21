@@ -162,9 +162,19 @@ class AudioEncoder(nn.Module):
 		assert x.shape[1:] == self.positional_embedding.shape, "incorrect audio shape"
 		x = (x + self.positional_embedding).to(x.dtype)
 
-		for block in self.blocks:
+		"""
+		x.shape
+		torch.Size([1, 1500, 1280])
+		"""
+		for idx, block in enumerate(self.blocks):
+			if idx <= 15:
+				continue
 			x, _, = block(x)
+			# if idx == 15:
+			# 	break
 
+		# if len(self.blocks) < 32:
+		# 	x = self.ln_post(x)
 		x = self.ln_post(x)
 
 		return x
@@ -199,18 +209,31 @@ class TextDecoder(nn.Module):
 
 		crossAttentionQKs = torch.zeros((len(self.blocks), x.shape[0], self.n_head, x.shape[1], xa.shape[1]))
 
+		"""
+		x.shape
+		torch.Size([1, 1, 1280])
+		"""
 		for blockIndex in range(len(self.blocks)):
+			# if blockIndex <= 20:
+			# 	continue
+
 			block = self.blocks[blockIndex]
 			x, crossAttentionQK = block(x, xa, mask=self.mask, kv_cache=kv_cache)
 			#x, crossAttentionQK = block(x, xa, mask=self.mask, kv_cache=None)
 
 			crossAttentionQKs[blockIndex] = crossAttentionQK
 
+			# if blockIndex == 20:
+			# 	break
+
 		x = self.ln(x)
 		logits = (x @ torch.transpose(self.token_embedding.weight.to(x.dtype), 0, 1)).float()
-
 		return logits, kv_cache, crossAttentionQKs
-
+		# """
+		# x.shape
+		# torch.Size([1, 1, 1280])
+		# """
+		# return x
 
 class Whisper(nn.Module):
 	def __init__(self, dims: ModelDimensions, model: str):
@@ -247,7 +270,8 @@ class Whisper(nn.Module):
 
 	@property
 	def device(self):
-		return torch.device("cpu")
+		# return torch.device("cpu")
+		return torch.device("cuda")
 
 	@property
 	def is_multilingual(self):

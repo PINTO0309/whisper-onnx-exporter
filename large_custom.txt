@@ -1,0 +1,44 @@
+sne4onnx \
+--input_onnx_file_path large-v1_encoder_11_post_float16.onnx \
+--input_op_names /Add_2_output_0 \
+--output_op_names output \
+--output_onnx_file_path large-v1_encoder_11_post_float16_clean.onnx
+
+
+sne4onnx \
+--input_onnx_file_path large-v1_encoder_11_pre_float16.onnx \
+--input_op_names mel \
+--output_op_names graph_output_cast_0 \
+--output_onnx_file_path large-v1_encoder_11_pre_float16_clean.onnx
+
+
+snc4onnx \
+--input_onnx_file_paths large-v1_encoder_11_pre_float16_clean.onnx large-v1_encoder_11_post_float16_clean.onnx \
+--output_onnx_file_path large-v1_encoder_11_float16.onnx \
+--srcop_destop graph_output_cast_0 /Add_2_output_0 \
+--op_prefixes_after_merging pre post
+
+
+
+sne4onnx \
+--input_onnx_file_path large-v2_encoder_11_post_float16.onnx \
+--input_op_names /Add_2_output_0 \
+--output_op_names output \
+--output_onnx_file_path large-v2_encoder_11_post_float16_clean.onnx
+
+
+sne4onnx \
+--input_onnx_file_path large-v2_encoder_11_pre_float16.onnx \
+--input_op_names mel \
+--output_op_names graph_output_cast_0 \
+--output_onnx_file_path large-v2_encoder_11_pre_float16_clean.onnx
+
+
+snc4onnx \
+--input_onnx_file_paths large-v2_encoder_11_pre_float16_clean.onnx large-v2_encoder_11_post_float16_clean.onnx \
+--output_onnx_file_path large-v2_encoder_11_float16.onnx \
+--srcop_destop graph_output_cast_0 /Add_2_output_0 \
+--op_prefixes_after_merging pre post
+
+
+

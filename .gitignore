@@ -1,3 +1,7 @@
 __pycache__
 onnx-models/
+onnx-models_/
+onnx-models-float16/
+onnx-models-float16_/
+onnx-models-dynamic-int8/
 pytorch-models/*.pt
