@@ -52,7 +52,10 @@ onnx-models/tiny/decoder.onnx
 ```
 
 Float32 to Float16 convert:
+
 https://github.com/quanvuhust/Export-ONNX-float-16
+
+https://zenn.dev/pinto0309/scraps/dc3e7b8ec32492
 
 ## License
 
