@@ -1,4 +1,7 @@
 # Whisper ONNX exporter
+**This repository is Fork [whisper-onnx-exporter](https://github.com/echogarden-project/whisper-onnx-exporter) with a few customizations.**
+
+
 
 A tool to export OpenAI Whisper speech recognition models to ONNX.
 
