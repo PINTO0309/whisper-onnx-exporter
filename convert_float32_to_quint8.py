@@ -17,16 +17,16 @@ input_onnx_files = [
     "tiny_encoder_11",
     "tiny.en_decoder_11",
     "tiny.en_encoder_11",
-    "large-v1/large-v1_decoder_11",
-    "large-v1/large-v1_encoder_11",
-    "large-v2/large-v2_decoder_11",
-    "large-v2/large-v2_encoder_11",
+    "large-v1/decoder/large-v1_decoder_11",
+    "large-v1/encoder/large-v1_encoder_11",
+    "large-v2/decoder/large-v2_decoder_11",
+    "large-v2/encoder/large-v2_encoder_11",
 ]
 
 
 for input_onnx_file in input_onnx_files:
     quantized_model = quantize_dynamic(
-        model_input=f'onnx-models_/{input_onnx_file}.onnx',
+        model_input=f'onnx-models/{input_onnx_file}.onnx',
         model_output=f'onnx-models-dynamic-int8/{input_onnx_file}_int8.onnx',
         weight_type=QuantType.QUInt8,
     )

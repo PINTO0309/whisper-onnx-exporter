@@ -167,14 +167,7 @@ class AudioEncoder(nn.Module):
 		torch.Size([1, 1500, 1280])
 		"""
 		for idx, block in enumerate(self.blocks):
-			if idx <= 15:
-				continue
 			x, _, = block(x)
-			# if idx == 15:
-			# 	break
-
-		# if len(self.blocks) < 32:
-		# 	x = self.ln_post(x)
 		x = self.ln_post(x)
 
 		return x
@@ -195,7 +188,7 @@ class TextDecoder(nn.Module):
 		mask = torch.empty(n_ctx, n_ctx).fill_(-np.inf).triu_(1)
 		self.register_buffer("mask", mask, persistent=False)
 
-	def forward(self, x: Tensor, xa: Tensor, kv_cache: Optional[Tensor] = None, offset: Optional[Tensor] = 0):
+	def forward(self, x: Tensor, xa: Tensor, kv_cache: Optional[Tensor] = None, offset: Optional[Tensor] = torch.tensor([0], dtype=torch.int64)):
 		"""
 		x : torch.LongTensor, shape = (batch_size, <= n_ctx)
 			the text tokens
@@ -204,7 +197,8 @@ class TextDecoder(nn.Module):
 		"""
 
 		# minus one because we pre allocate kv_cache
-		x = self.token_embedding(x) + self.positional_embedding[offset:offset + x.shape[-1]]
+		offset = torch.squeeze(offset)
+		x = self.token_embedding(x) + self.positional_embedding[offset:offset + x.shape[-1], :]
 		x = x.to(xa.dtype)
 
 		crossAttentionQKs = torch.zeros((len(self.blocks), x.shape[0], self.n_head, x.shape[1], xa.shape[1]))

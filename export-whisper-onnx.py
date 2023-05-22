@@ -33,11 +33,12 @@ if not modelName in validModelNames:
 
 checkpoint = torch.load(f"pytorch-models/{modelName}.pt", map_location=torch.device('cpu'))
 
+DEVICE = 'cpu'
+
 modelDims = ModelDimensions(**checkpoint["dims"])
 whisper = Whisper(modelDims, modelName)
 whisper.load_state_dict(checkpoint["model_state_dict"])
-# whisper = whisper.to("cpu")
-whisper = whisper.to("cuda")
+whisper = whisper.to(DEVICE)
 batchSize = 1
 audioEncoder = whisper.encoder
 audioEncoderRandomInputs = \
@@ -45,7 +46,7 @@ audioEncoderRandomInputs = \
 		batchSize,
 		modelDims.n_mels,
 		modelDims.n_audio_ctx * 2
-	).cuda()
+	).to(DEVICE)
 encodedFeatures = whisper.encoder(audioEncoderRandomInputs)
 outputDir = f"onnx-models"
 os.makedirs(outputDir, exist_ok=True)
@@ -74,37 +75,63 @@ if modelName not in ["large", "large-v1", "large-v2"]:
 	onnx.save(model_simp, ENCODER_FILE)
 
 
-######### Decoder
-with torch.autocast("cuda", dtype=torch.float16):
-	textDecoder = whisper.decoder
-	tokens = torch.tensor([[0]], dtype=torch.int64).cuda()
-	kvCache = torch.from_numpy(whisper.new_kv_cache(batchSize, 1)).cuda()
-	offset = torch.tensor(0).cuda()
+# ######### Decoder
+# if DEVICE == 'cpu':
+# 	textDecoder = whisper.decoder
+# 	tokens = torch.tensor([[0]], dtype=torch.int64).to(DEVICE)
+# 	kvCache = torch.from_numpy(whisper.new_kv_cache(batchSize, 1)).to(DEVICE)
+# 	offset = torch.tensor([0], dtype=torch.int64).to(DEVICE)
 
-	DECODER_FILE = f"{outputDir}/{modelName}_decoder_{OPSET}.onnx"
-	torch.onnx.export(
-		model=textDecoder,
-		args=(tokens, encodedFeatures, kvCache, offset),
-		f=DECODER_FILE,
-		input_names=["tokens", "audio_features", "kv_cache", "offset"],
-		output_names=["logits", "output_kv_cache", "cross_attention_qks"],
-		# output_names=["x2"],
-		dynamic_axes={
-			"tokens": [0, 1],
-			"audio_features": [0],
-			"kv_cache": [1, 2],
-			"output_kv_cache": [1, 2],
-			"cross_attention_qks": [1, 3, 4],
-		},
-		opset_version=OPSET,
-	)
-	if modelName not in ["large", "large-v1", "large-v2"]:
-		model_onnx2 = onnx.load(DECODER_FILE)
-		model_simp, check = simplify(model_onnx2)
-		onnx.save(model_simp, DECODER_FILE)
-		model_onnx2 = onnx.load(DECODER_FILE)
-		model_simp, check = simplify(model_onnx2)
-		onnx.save(model_simp, DECODER_FILE)
-		model_onnx2 = onnx.load(DECODER_FILE)
-		model_simp, check = simplify(model_onnx2)
-		onnx.save(model_simp, DECODER_FILE)
+# 	DECODER_FILE = f"{outputDir}/{modelName}_decoder_{OPSET}.onnx"
+# 	torch.onnx.export(
+# 		model=textDecoder,
+# 		args=(tokens, encodedFeatures, kvCache, offset),
+# 		f=DECODER_FILE,
+# 		input_names=["tokens", "audio_features", "kv_cache", "offset"],
+# 		output_names=["logits", "output_kv_cache", "cross_attention_qks"],
+# 		# output_names=["x2"],
+# 		dynamic_axes={
+# 			"tokens": [0, 1],
+# 			"audio_features": [0],
+# 			"kv_cache": [1, 2],
+# 			"output_kv_cache": [1, 2],
+# 			"cross_attention_qks": [1, 3, 4],
+# 		},
+# 		opset_version=OPSET,
+# 	)
+
+# else:
+# 	with torch.autocast("cuda", dtype=torch.float16):
+# 		textDecoder = whisper.decoder
+# 		tokens = torch.tensor([[0]], dtype=torch.int64).to(DEVICE)
+# 		kvCache = torch.from_numpy(whisper.new_kv_cache(batchSize, 1)).to(DEVICE)
+# 		offset = torch.tensor([0], dtype=torch.int64).to(DEVICE)
+
+# 		DECODER_FILE = f"{outputDir}/{modelName}_decoder_{OPSET}.onnx"
+# 		torch.onnx.export(
+# 			model=textDecoder,
+# 			args=(tokens, encodedFeatures, kvCache, offset),
+# 			f=DECODER_FILE,
+# 			input_names=["tokens", "audio_features", "kv_cache", "offset"],
+# 			output_names=["logits", "output_kv_cache", "cross_attention_qks"],
+# 			# output_names=["x2"],
+# 			dynamic_axes={
+# 				"tokens": [0, 1],
+# 				"audio_features": [0],
+# 				"kv_cache": [1, 2],
+# 				"output_kv_cache": [1, 2],
+# 				"cross_attention_qks": [1, 3, 4],
+# 			},
+# 			opset_version=OPSET,
+# 		)
+
+# if modelName not in ["large", "large-v1", "large-v2"]:
+# 	model_onnx2 = onnx.load(DECODER_FILE)
+# 	model_simp, check = simplify(model_onnx2)
+# 	onnx.save(model_simp, DECODER_FILE)
+# 	model_onnx2 = onnx.load(DECODER_FILE)
+# 	model_simp, check = simplify(model_onnx2)
+# 	onnx.save(model_simp, DECODER_FILE)
+# 	model_onnx2 = onnx.load(DECODER_FILE)
+# 	model_simp, check = simplify(model_onnx2)
+# 	onnx.save(model_simp, DECODER_FILE)
